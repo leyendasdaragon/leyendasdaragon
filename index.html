@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leyendas d'Aragón | Historias, Mitos y Tradición</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@0,600;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        aragored: '#b91c1c',
+                        bloodred: '#7f1d1d',
+                        fireorange: '#f59e0b',
+                        fireamber: '#d97706',
+                        mysticdark: '#070607',
+                        mysticcard: '#120b0e',
+                        mysticborder: '#3b0a0e'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #070607;
+            color: #f3f4f6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+        .hero-bg {
+            background: linear-gradient(to bottom, rgba(7, 6, 7, 0.75), rgba(7, 6, 7, 0.95)), 
+                        url('https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        }
+        .fire-glow {
+            text-shadow: 0 0 20px rgba(185, 28, 28, 0.8), 0 0 40px rgba(245, 158, 11, 0.4);
+        }
+        .ember-card {
+            background: linear-gradient(145deg, rgba(18, 11, 14, 0.95), rgba(30, 10, 15, 0.8));
+            border: 1px solid rgba(185, 28, 28, 0.25);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+        }
+        .ember-card:hover {
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 10px 35px -5px rgba(185, 28, 28, 0.3);
+        }
+        /* Canvas de Chispas */
+        #embersCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between relative">
+
+    <!-- Canvas para efecto chispas/ascuas de la hoguera -->
+    <canvas id="embersCanvas"></canvas>
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-mysticdark/95 backdrop-blur-md border-b border-bloodred/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-3 group relative z-10">
+                    <div class="w-12 h-12 rounded-full border-2 border-aragored shadow-[0_0_15px_rgba(185,28,28,0.6)] overflow-hidden group-hover:scale-105 transition-transform">
+                        <img src="https://lh3.googleusercontent.com/d/1g_Qx8wVgP5SNoUlJr1L8OThgBBqGC7ry" alt="Leyendas d'Aragón Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80';">
+                    </div>
+                    <span class="font-cinzel font-bold text-xl sm:text-2xl tracking-wider text-white group-hover:text-fireorange transition-colors">
+                        Leyendas <span class="text-aragored">d'Aragón</span>
+                    </span>
+                </a>
+
+                <!-- Nav Links -->
+                <nav class="hidden md:flex space-x-8 items-center relative z-10">
+                    <a href="#inicio" class="text-gray-300 hover:text-fireorange transition-colors font-medium text-sm uppercase tracking-wider">Inicio</a>
+                    <a href="#videos" class="text-gray-300 hover:text-fireorange transition-colors font-medium text-sm uppercase tracking-wider">Relatos</a>
+                    <a href="#leyendas" class="text-gray-300 hover:text-fireorange transition-colors font-medium text-sm uppercase tracking-wider">Territorio</a>
+                    <a href="#merch" class="text-fireorange hover:text-white transition-colors font-medium text-sm uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-fire text-xs text-aragored animate-pulse"></i> Merch
+                    </a>
+                    <a href="#contacto" class="text-gray-300 hover:text-fireorange transition-colors font-medium text-sm uppercase tracking-wider">Aportar Leyenda</a>
+                </nav>
+
+                <!-- Redes Sociales Header -->
+                <div class="hidden md:flex items-center space-x-4 relative z-10">
+                    <a href="https://www.youtube.com/@LeyendasdAragon" target="_blank" rel="noopener" class="text-gray-400 hover:text-red-600 transition-colors text-lg" title="YouTube">
+                        <i class="fa-brands fa-youtube"></i>
+                    </a>
+                    <a href="https://tiktok.com" target="_blank" rel="noopener" class="text-gray-400 hover:text-fireorange transition-colors text-lg" title="TikTok">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" class="text-gray-400 hover:text-red-500 transition-colors text-lg" title="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                </div>
+
+                <!-- Botón Menú Móvil -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white text-2xl focus:outline-none relative z-10">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-mysticcard border-b border-bloodred/60 px-4 pt-2 pb-6 space-y-3 relative z-10">
+            <a href="#inicio" class="block text-gray-300 hover:text-fireorange py-2 font-medium">Inicio</a>
+            <a href="#videos" class="block text-gray-300 hover:text-fireorange py-2 font-medium">Relatos en Vídeo</a>
+            <a href="#leyendas" class="block text-gray-300 hover:text-fireorange py-2 font-medium">El Territorio</a>
+            <a href="#merch" class="block text-fireorange font-medium py-2">Tienda & Merch</a>
+            <a href="#contacto" class="block text-gray-300 hover:text-fireorange py-2 font-medium">Aportar Leyenda</a>
+            <div class="flex space-x-6 pt-4 border-t border-bloodred/30">
+                <a href="https://www.youtube.com/@LeyendasdAragon" target="_blank" class="text-gray-400 hover:text-red-600 text-xl"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://tiktok.com" target="_blank" class="text-gray-400 hover:text-fireorange text-xl"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://instagram.com" target="_blank" class="text-gray-400 hover:text-red-500 text-xl"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-20 relative z-10">
+
+        <!-- Hero Section -->
+        <section id="inicio" class="hero-bg min-h-[90vh] flex items-center justify-center relative px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto text-center py-20 relative z-10">
+                <!-- Logo Emblem Central con halo de fuego -->
+                <div class="mb-8 flex justify-center">
+                    <div class="relative group">
+                        <div class="absolute -inset-2 bg-gradient-to-r from-aragored via-fireorange to-bloodred rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                        <div class="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 border-aragored shadow-[0_0_30px_rgba(185,28,28,0.8)]">
+                            <img src="https://lh3.googleusercontent.com/d/1g_Qx8wVgP5SNoUlJr1L8OThgBBqGC7ry" alt="Emblema Leyendas d'Aragón" class="w-full h-full object-cover scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80';">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Título y Slogan Oficial -->
+                <h1 class="font-cinzel text-3xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight fire-glow">
+                    Leyendas d'Aragón
+                </h1>
+
+                <!-- Slogan destacado -->
+                <div class="relative max-w-3xl mx-auto mb-10 py-4 px-6 border-y border-aragored/40 bg-mysticdark/60 backdrop-blur-sm">
+                    <p class="font-cinzel italic text-lg sm:text-2xl text-amber-200/90 leading-relaxed tracking-wide">
+                        «Porque hay historias que nunca mueren...<br>
+                        <span class="text-fireorange font-semibold">solo esperan volver a ser contadas»</span>
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="#videos" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-aragored via-bloodred to-black border border-aragored text-white font-bold hover:shadow-[0_0_25px_rgba(185,28,28,0.7)] transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-fire-flame-curved text-fireorange"></i> Escuchar Relatos
+                    </a>
+                    <a href="#merch" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-mysticcard border border-amber-900/50 text-fireorange font-semibold hover:border-fireorange hover:bg-aragored/20 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-shirt"></i> Merchandising
+                    </a>
+                </div>
+            </div>
+            <!-- Gradient Overlay Bottom -->
+            <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-mysticdark via-mysticdark/80 to-transparent"></div>
+        </section>
+
+        <!-- Seccion Vídeos / Relatos al fuego -->
+        <section id="videos" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-aragored font-cinzel text-sm uppercase tracking-widest block mb-2"><i class="fa-solid fa-campground mr-1"></i> Al calor de la hoguera</span>
+                <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-white mb-4 fire-glow">Relatos en Vídeo</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-aragored to-transparent mx-auto rounded-full mb-4"></div>
+                <p class="text-gray-400 max-w-xl mx-auto">Toma asiento junto al fuego. Historias de terror, magia y misterio grabadas a fuego en nuestra memoria.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="videos-grid">
+                <!-- Card Video 1 -->
+                <div class="ember-card rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between">
+                    <div>
+                        <a href="https://youtu.be/nYcnhtAEDic" target="_blank" rel="noopener" class="block relative aspect-video bg-gray-900 group cursor-pointer overflow-hidden border-b border-bloodred/40">
+                            <img src="https://img.youtube.com/vi/nYcnhtAEDic/hqdefault.jpg" alt="La Leyenda del Salto de Roldán" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                            <div class="absolute inset-0 bg-gradient-to-t from-mysticcard via-black/30 to-transparent flex items-center justify-center group-hover:bg-black/10 transition-colors">
+                                <div class="w-14 h-14 rounded-full bg-aragored/90 text-white flex items-center justify-center shadow-[0_0_20px_rgba(185,28,28,0.8)] group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-play ml-1 text-xl text-fireorange"></i>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="p-6">
+                            <span class="text-xs font-semibold text-fireorange uppercase tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-mountain text-aragored"></i> Huesca
+                            </span>
+                            <h3 class="font-cinzel text-xl font-bold text-white mt-2 mb-2">La Leyenda del Salto de Roldán</h3>
+                            <p class="text-gray-400 text-sm line-clamp-3 leading-relaxed">
+                                El prodigioso e increíble salto a caballo del caballero Roldán sobre las peñas de la Hoya de Huesca para escapar de sus perseguidores.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 flex justify-between items-center text-xs text-gray-500 border-t border-bloodred/20 mt-4">
+                        <span class="text-gray-400"><i class="fa-brands fa-youtube mr-1 text-aragored"></i> YouTube</span>
+                        <a href="https://youtu.be/nYcnhtAEDic" target="_blank" rel="noopener" class="text-fireorange hover:text-white font-semibold flex items-center gap-1 transition-colors">Ver Relato <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+                    </div>
+                </div>
+
+                <!-- Card Video 2 -->
+                <div class="ember-card rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between opacity-90">
+                    <div>
+                        <div class="relative aspect-video bg-gray-900 group overflow-hidden border-b border-bloodred/40">
+                            <img src="https://images.unsplash.com/photo-1548625361-1823f66f9160?auto=format&fit=crop&w=800&q=80" alt="La Campana de Huesca" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60">
+                            <div class="absolute inset-0 bg-gradient-to-t from-mysticcard via-black/40 to-transparent flex items-center justify-center">
+                                <span class="bg-aragored/90 text-white font-cinzel text-xs font-bold px-4 py-2 rounded-full border border-fireorange/50 shadow-[0_0_15px_rgba(185,28,28,0.8)] tracking-wider uppercase">
+                                    <i class="fa-regular fa-clock mr-1"></i> Próximamente
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs font-semibold text-fireorange uppercase tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-crown text-aragored"></i> Huesca
+                            </span>
+                            <h3 class="font-cinzel text-xl font-bold text-white mt-2 mb-2">La Campana de Huesca</h3>
+                            <p class="text-gray-400 text-sm line-clamp-3 leading-relaxed">
+                                El rey Ramiro II el Monje y la decapitación de los nobles rebeldes para forjar la legendaria campana que resonaría en todo Aragón.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 flex justify-between items-center text-xs text-gray-500 border-t border-bloodred/20 mt-4">
+                        <span class="text-amber-500/80 font-medium"><i class="fa-solid fa-hourglass-half mr-1 text-aragored"></i> En producción</span>
+                        <span class="text-gray-500 italic">Próximo estreno</span>
+                    </div>
+                </div>
+
+                <!-- Card Video 3 -->
+                <div class="ember-card rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between opacity-90">
+                    <div>
+                        <div class="relative aspect-video bg-gray-900 group overflow-hidden border-b border-bloodred/40">
+                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80" alt="Pyrene y los Pirineos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60">
+                            <div class="absolute inset-0 bg-gradient-to-t from-mysticcard via-black/40 to-transparent flex items-center justify-center">
+                                <span class="bg-aragored/90 text-white font-cinzel text-xs font-bold px-4 py-2 rounded-full border border-fireorange/50 shadow-[0_0_15px_rgba(185,28,28,0.8)] tracking-wider uppercase">
+                                    <i class="fa-regular fa-clock mr-1"></i> Próximamente
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs font-semibold text-fireorange uppercase tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-mountain text-aragored"></i> Pirineos
+                            </span>
+                            <h3 class="font-cinzel text-xl font-bold text-white mt-2 mb-2">Pyrene y el Origen de las Cumbres</h3>
+                            <p class="text-gray-400 text-sm line-clamp-3 leading-relaxed">
+                                El mito de la ninfa Pyrene, la traición de Gerión y las lágrimas de Hércules levantando la inmensa cordillera de los Pirineos.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-0 flex justify-between items-center text-xs text-gray-500 border-t border-bloodred/20 mt-4">
+                        <span class="text-amber-500/80 font-medium"><i class="fa-solid fa-hourglass-half mr-1 text-aragored"></i> En producción</span>
+                        <span class="text-gray-500 italic">Próximo estreno</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Channel -->
+            <div class="mt-12 text-center">
+                <a href="https://www.youtube.com/@LeyendasdAragon" target="_blank" rel="noopener" class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-red-950 via-aragored to-black border border-aragored/80 text-white hover:text-fireorange transition-all font-semibold shadow-[0_0_20px_rgba(185,28,28,0.4)]">
+                    <i class="fa-brands fa-youtube text-2xl text-red-500"></i> Únete a la comunidad de YouTube
+                </a>
+            </div>
+        </section>
+
+        <!-- Seccion Próximamente: Merchandising / Camisetas -->
+        <section id="merch" class="py-20 bg-gradient-to-b from-mysticdark via-mysticcard to-mysticdark border-y border-bloodred/40 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    
+                    <!-- Text Info -->
+                    <div class="lg:w-1/2 text-left">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-aragored/20 text-fireorange border border-aragored/50 text-xs font-bold uppercase tracking-wider mb-4">
+                            <i class="fa-solid fa-fire text-aragored"></i> Próximamente
+                        </span>
+                        <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-white mb-6 leading-tight">
+                            Viste la magia y las <br><span class="text-aragored fire-glow">sombras del folklore</span>
+                        </h2>
+                        <p class="text-gray-300 mb-6 leading-relaxed">
+                            Muy pronto lanzaremos camisetas, ilustraciones oscuras y merch exclusivo con el emblema del dragón, las brujas y las criaturas de nuestra tierra.
+                        </p>
+
+                        <!-- Formulario de Alerta -->
+                        <div class="bg-black/60 p-6 rounded-2xl border border-bloodred/50 max-w-md shadow-2xl">
+                            <h4 class="font-cinzel text-lg font-bold text-white mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-envelope-open-text text-fireorange"></i> Sé de los primeros en enterarte
+                            </h4>
+                            <p class="text-xs text-gray-400 mb-4">Inscríbete para recibir acceso prioritario y un descuento exclusivo de lanzamiento.</p>
+                            
+                            <form id="newsletter-form" class="flex flex-col sm:flex-row gap-2">
+                                <input type="email" placeholder="Tu correo electrónico" required class="bg-mysticcard border border-bloodred/60 text-white text-sm rounded-lg px-4 py-3 focus:outline-none focus:border-fireorange flex-grow">
+                                <button type="submit" class="bg-gradient-to-r from-aragored to-bloodred hover:from-red-600 hover:to-aragored text-white font-bold text-sm px-6 py-3 rounded-lg transition-all shadow-[0_0_15px_rgba(185,28,28,0.5)] whitespace-nowrap">
+                                    Avisar
+                                </button>
+                            </form>
+                            <p id="form-msg" class="text-xs text-amber-400 mt-2 hidden">¡Registrado! Te enviaremos una chispa de aviso antes que a nadie.</p>
+                        </div>
+                    </div>
+
+                    <!-- Visual Mockups Preview -->
+                    <div class="lg:w-1/2 w-full grid grid-cols-2 gap-4">
+                        <!-- Preview Card 1 -->
+                        <div class="ember-card p-5 rounded-2xl text-center relative group overflow-hidden">
+                            <div class="absolute top-3 right-3 bg-aragored text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase z-10 border border-fireorange/40">Color Oficial</div>
+                            <div class="aspect-square rounded-xl bg-black/80 mb-4 flex items-center justify-center p-2 relative overflow-hidden border border-bloodred/30">
+                                <img src="https://lh3.googleusercontent.com/d/1g_Qx8wVgP5SNoUlJr1L8OThgBBqGC7ry" alt="Camiseta Escudo Leyendas d'Aragón" class="w-full h-full object-cover rounded-full p-1 opacity-95 group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80';">
+                            </div>
+                            <h4 class="font-cinzel text-sm font-bold text-white">Camiseta "Dragón Real"</h4>
+                            <p class="text-xs text-fireorange font-semibold mt-1">Sello Leyendas d'Aragón</p>
+                        </div>
+
+                        <!-- Preview Card 2: Camiseta negra lisa con logo en el centro -->
+                        <div class="ember-card p-5 rounded-2xl text-center relative group overflow-hidden flex flex-col justify-between">
+                            <div class="absolute top-3 right-3 bg-neutral-800 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase z-10 border border-neutral-600">Edición Negra</div>
+                            <div class="aspect-square rounded-xl bg-neutral-950 mb-4 relative overflow-hidden border border-neutral-800 flex items-center justify-center p-6 shadow-inner">
+                                <!-- Fondo de camiseta negra estilizada -->
+                                <div class="absolute inset-2 bg-neutral-900 rounded-lg flex items-center justify-center border border-neutral-800 shadow-xl">
+                                    <!-- Logotipo en blanco y negro centrado -->
+                                    <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden grayscale contrast-200 border-2 border-white/70 shadow-[0_0_25px_rgba(255,255,255,0.3)] bg-black group-hover:scale-105 transition-transform duration-500">
+                                        <img src="https://lh3.googleusercontent.com/d/1g_Qx8wVgP5SNoUlJr1L8OThgBBqGC7ry" alt="Logo Leyendas d'Aragón en Blanco y Negro" class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-cinzel text-sm font-bold text-white">Camiseta "Penumbra"</h4>
+                                <p class="text-xs text-gray-400 font-semibold mt-1">Negro liso con logo B&N</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Seccion Interactiva: El Mapa del Misterio -->
+        <section id="leyendas" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-white mb-4 fire-glow">Territorio de Leyenda</h2>
+                <div class="w-20 h-1 bg-aragored mx-auto rounded-full mb-4"></div>
+                <p class="text-gray-400 max-w-xl mx-auto">Cada rincón de las tres provincias alberga secretos esperando ser desenterrados.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Huesca -->
+                <div class="ember-card rounded-2xl overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-48 overflow-hidden border-b border-bloodred/40 group">
+                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80" alt="Huesca - Cumbre e Ibones" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-mysticcard via-transparent to-black/30"></div>
+                            <span class="absolute bottom-3 left-4 font-cinzel text-xs text-fireorange uppercase tracking-wider bg-black/60 px-2.5 py-1 rounded border border-aragored/40 flex items-center gap-1.5">
+                                <i class="fa-solid fa-mountain"></i> Pirineo & Prepirineo
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-cinzel text-2xl font-bold text-white mb-2">Huesca</h3>
+                            <p class="text-gray-400 text-sm mb-4 leading-relaxed">Cumbres heladas donde habitan gigantes, ibones habitados por ninfas y monasterios excavados en roca viva.</p>
+                            <ul class="text-xs text-gray-300 space-y-2 border-t border-bloodred/30 pt-3">
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> Silván de Tella y el Gigante</li>
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> El Ibón de Plan y la Mora</li>
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> San Juan de la Peña</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zaragoza -->
+                <div class="ember-card rounded-2xl overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-48 overflow-hidden border-b border-bloodred/40 group">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80" alt="Zaragoza - Moncayo y Castillos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-mysticcard via-transparent to-black/30"></div>
+                            <span class="absolute bottom-3 left-4 font-cinzel text-xs text-fireorange uppercase tracking-wider bg-black/60 px-2.5 py-1 rounded border border-aragored/40 flex items-center gap-1.5">
+                                <i class="fa-solid fa-castle"></i> Moncayo & Ribera del Ebro
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-cinzel text-2xl font-bold text-white mb-2">Zaragoza</h3>
+                            <p class="text-gray-400 text-sm mb-4 leading-relaxed">Fortalezas malditas, brujas excomulgadas por la Santa Sede y misterios susurrados a orillas del Ebro.</p>
+                            <ul class="text-xs text-gray-300 space-y-2 border-t border-bloodred/30 pt-3">
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> Trasmoz y la Tía Casca</li>
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> La Campana de Huesca</li>
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> El Castillo de Sádaba</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teruel -->
+                <div class="ember-card rounded-2xl overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-48 overflow-hidden border-b border-bloodred/40 group">
+                            <img src="https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80" alt="Teruel - Serranías y Torres" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-mysticcard via-transparent to-black/30"></div>
+                            <span class="absolute bottom-3 left-4 font-cinzel text-xs text-fireorange uppercase tracking-wider bg-black/60 px-2.5 py-1 rounded border border-aragored/40 flex items-center gap-1.5">
+                                <i class="fa-solid fa-skull"></i> Albarracín & Maestrazgo
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-cinzel text-2xl font-bold text-white mb-2">Teruel</h3>
+                            <p class="text-gray-400 text-sm mb-4 leading-relaxed">Amores trágicos marcados por la muerte, caballeros templarios y sierras repletas de mitos primigenios.</p>
+                            <ul class="text-xs text-gray-300 space-y-2 border-t border-bloodred/30 pt-3">
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> Los Amantes de Teruel</li>
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> El Dragón de Bronchales</li>
+                                <li><i class="fa-solid fa-fire-flame-simple text-aragored mr-2"></i> La Gruta de las Maravillas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seccion Contacto / Colaboraciones -->
+        <section id="contacto" class="py-20 bg-mysticcard/80 border-t border-bloodred/40">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <i class="fa-solid fa-scroll text-4xl text-aragored mb-4"></i>
+                <h2 class="font-cinzel text-3xl font-bold text-white mb-4 fire-glow">¿Conoces una historia que deba ser contada?</h2>
+                <p class="text-gray-300 mb-8 max-w-lg mx-auto">
+                    Si en tu pueblo hay un mito olvidado, un castillo maldito o una leyenda transmitida en las noches de invierno, comparte tu historia con nosotros.
+                </p>
+
+                <a href="mailto:contacto@leyendasdaragon.com" class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-aragored to-bloodred text-white hover:text-fireorange transition-all font-bold shadow-[0_0_20px_rgba(185,28,28,0.5)]">
+                    <i class="fa-regular fa-envelope"></i> Enviar Leyenda o Sugerencia
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-bloodred/40 py-12 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                
+                <!-- Brand -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full border border-aragored/80 overflow-hidden shadow-[0_0_10px_rgba(185,28,28,0.5)]">
+                        <img src="https://lh3.googleusercontent.com/d/1g_Qx8wVgP5SNoUlJr1L8OThgBBqGC7ry" alt="Leyendas d'Aragón" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80';">
+                    </div>
+                    <span class="font-cinzel font-bold text-lg text-white">
+                        Leyendas <span class="text-aragored">d'Aragón</span>
+                    </span>
+                </div>
+
+                <!-- Copyright -->
+                <p class="text-xs text-gray-500 text-center font-cinzel">
+                    &copy; <span id="year"></span> Leyendas d'Aragón. Divulgación cultural y mitológica.
+                </p>
+
+                <!-- Socials -->
+                <div class="flex space-x-5 text-gray-400">
+                    <a href="https://www.youtube.com/@LeyendasdAragon" target="_blank" rel="noopener" class="hover:text-red-600 transition-colors"><i class="fa-brands fa-youtube text-lg"></i></a>
+                    <a href="https://tiktok.com" target="_blank" class="hover:text-fireorange transition-colors"><i class="fa-brands fa-tiktok text-lg"></i></a>
+                    <a href="https://instagram.com" target="_blank" class="hover:text-red-500 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script de Chispas / Hoguera en Canvas y Menú -->
+    <script>
+        // Set dynamic year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Newsletter form handler
+        const newsletterForm = document.getElementById('newsletter-form');
+        const formMsg = document.getElementById('form-msg');
+
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            newsletterForm.reset();
+            formMsg.classList.remove('hidden');
+            setTimeout(() => {
+                formMsg.classList.add('hidden');
+            }, 4000);
+        });
+
+        // Canvas de Chispas / Ascuas Flotantes de la Hoguera
+        const canvas = document.getElementById('embersCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const embers = [];
+        const emberCount = 45;
+
+        for (let i = 0; i < emberCount; i++) {
+            embers.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2.5 + 0.5,
+                speedY: Math.random() * 0.8 + 0.2,
+                speedX: (Math.random() - 0.5) * 0.4,
+                opacity: Math.random() * 0.8 + 0.2,
+                color: Math.random() > 0.4 ? '#f59e0b' : '#b91c1c'
+            });
+        }
+
+        function animateEmbers() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            embers.forEach(ember => {
+                ember.y -= ember.speedY;
+                ember.x += ember.speedX + Math.sin(ember.y * 0.01) * 0.2;
+
+                if (ember.y < 0) {
+                    ember.y = canvas.height + 10;
+                    ember.x = Math.random() * canvas.width;
+                }
+
+                ctx.beginPath();
+                ctx.arc(ember.x, ember.y, ember.size, 0, Math.PI * 2);
+                ctx.fillStyle = ember.color;
+                ctx.globalAlpha = ember.opacity;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = ember.color;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animateEmbers);
+        }
+
+        animateEmbers();
+    </script>
+</body>
+</html>
